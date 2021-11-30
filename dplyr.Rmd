@@ -1,0 +1,318 @@
+---
+title: 'A gentle introduction: Explore and analyze data with R'
+output:
+  html_document:
+    #css: style_7.css
+    df_print: paged
+    theme: flatly
+    highlight: breezedark
+    toc: yes
+    toc_float: yes
+    code_download: yes
+---
+
+## **Welcome**
+
+In this tutorial, we'll learn some basic functions to help you work easily and intuitively with data using `dplyr`. Those include things like selecting specific columns, deciding which rows to keep based on whether or not they match our conditions, and finding summary statistics for different variables and groups. Sometimes we call these steps part of "data wrangling."
+
+## **What's in this tutorial?**
+
+In this short tutorial, we'll get to learn and practice the following dplyr verbs:
+
+-   `filter()`: keep rows that satisfy your conditions
+
+-   `select()`: keep or exclude some columns
+
+![](images/r_learners_sm.jpeg "Artwork by @allison_horst"){width="500"}
+
+Let's get started!
+
+## 1. **Meet the Tidyverse and data**
+
+Before we can get started doing some Data Science, we typically begin by loading packages into our current R environment and importing data.
+
+```{r}
+# Load the Tidyverse
+library(tidyverse)
+
+# Load the library containing the data set
+library(palmerpenguins)
+
+# Print the first few rows of the data
+penguins
+
+```
+
+`NA` values represent `Not Available` / `Missing Values`. We'll cover better ways to deal with them later in the course but for now, let's drop them using `drop_na()`
+
+```{r}
+# Drop rows containing missing values
+penguins <- penguins %>%
+  drop_na()
+
+# Do we still have any missing values?
+penguins %>% 
+  anyNA()
+```
+
+No missing values! Excellent!
+
+```{r}
+penguins %>% 
+  head()
+```
+
+We only see penguins of species `Adelie`. Are there any other species of penguins? To answer this, we use a function/verb in dplyr called `distinct()`. distinct only returns the unique rows in our data:
+
+```{r}
+# What are the different species of penguins in our data?
+penguins %>% 
+  distinct(species)
+```
+
+```{r}
+# What are the different islands in our data?
+penguins %>% 
+  distinct(island)
+```
+
+Now let's go forth and filter!
+
+## 2. filter: keep rows that satisfy your conditions
+
+![](images/dplyr_filter_sm.png){width="500"}
+
+Let's take a look at the first few rows of our data again.
+
+```{r}
+penguins %>% 
+  head(n = 7)
+```
+
+We only see penguins of species `Adelie`. Are there any other species of penguins? To answer this, we use a function/verb in dplyr called `distinct()`. distinct only returns the unique rows in our data:
+
+```{r}
+# What are the different species of penguins in our data?
+penguins %>% 
+  distinct(species)
+```
+
+```{r}
+# What are the different islands in our data?
+penguins %>% 
+  distinct(species)
+```
+
+### **Example 1**
+
+Make a subset with only chinstrap penguins.
+
+In the code below, we **filter** the **penguins** data to only keep rows where the entry for **species** exactly matches "Adelie" (case sensitive).
+
+```{r}
+penguins %>% 
+  filter(species == "Adelie")
+```
+
+Easy, right? We may want to save this to a variable name "adelie_penguins". This is how we would go about it.
+
+```{r}
+# Subset data to only obtain Adelie penguins
+adelie_penguins <- penguins %>% 
+  filter(species == "Adelie")
+
+# Print the data
+adelie_penguins
+```
+
+Good job!! Give it a try too.
+
+**Question 1: filter** the **penguins** data to only keep rows where the entry for **species** exactly matches "Chinstrap". Save this in a variable name `chinstrap_penguins`
+
+    ```
+    BEGIN QUESTION
+    name: q1
+    manual: false
+    points:
+        - 1
+    ```
+
+```{r}
+chinstrap_penguins <- penguins %>% 
+  filter(species == "Chinstrap")
+
+chinstrap_penguins
+```
+
+```{r}
+## Test ##
+test_that('data dimensions correct', {
+  expect_output(glimpse(chinstrap_penguins), "Rows: 68\nColumns: 8")
+  
+})
+```
+
+```{r}
+## Test ##
+test_that('the subset only has Chinstrap penguins', {
+  expect_output(print(unique(chinstrap_penguins$species)), "[1] Chinstrap", fixed = TRUE)
+  
+})
+```
+
+```{r}
+. = " # BEGIN TEST CONFIG
+points: 1
+hidden: true
+success_message: Excellent. You have successfully filtered the data set to only include observations where the species is Chinstrap!
+
+failure_message: Oops! Let's give it another try. Ensure you have filtered the penguins data to only keep rows where the entry for **species** exactly matches **Chinstrap**.
+" # END TEST CONFIG
+
+  
+```
+
+### **Example 2**
+
+That went well. What if now we wanted to keep rows where species matches "Chinstrap" **OR** "Gentoo"?
+
+We use the "or" operator, `|` (the vertical line) when we want to filter rows based on multiple observations in a specific column.
+
+```{r}
+# Make a subset only containing Chinstrap and Gentoo penguins
+penguins %>% 
+  filter(species == "Chinstrap" | species == "Gentoo")
+```
+
+Now, let's take this a little bit further. What if we wanted to make subsets based on conditions that span different columns? Say we only want to keep observations (rows) where the species is "Gentoo" **AND** the island is "Dream" - a row should only be retained if both of those conditions are met.
+
+There are a number of ways you can write an **and** statement within `filter()`, including:
+
+-   A comma between conditions indicates both must be met (`filter(x == "a", y == "b")`)
+
+-   An ampersand between conditions indicates both must be met (`filter(x == "a" & y == "b")`)
+
+We can create a subset starting from penguins that only contains observations for Gentoo penguins on Dream Island as follows:
+
+```{r}
+penguins %>%
+  filter(species == "Gentoo", island == "Dream")
+```
+
+Give it a try yourself.
+
+**Question 2:** Create a subset from `penguins` containing observations for **female** **Adelie** penguins on **Dream** or **Torgersen** Islands.
+
+    ```
+    BEGIN QUESTION
+
+    name: q2
+
+    manual: false
+
+    points:
+
+        - 1
+        - 1
+        - 1
+        
+    ```
+
+```{r}
+penguins_subset <- penguins %>%
+  filter(sex == "female",
+         species == "Adelie") %>%
+  filter(island %in% c("Dream","Torgersen"))
+
+penguins_subset
+```
+
+```{r}
+## Test ##
+test_that('the subset only has Adelie penguins', {
+  expect_output(print(unique(penguins_subset$species)), "[1] Adelie", fixed = TRUE)
+  
+})
+```
+
+```{r}
+## Test ##
+test_that('the subset only has female penguins', {
+  expect_output(print(unique(penguins_subset$sex)), "[1] female", fixed = TRUE)
+  
+})
+```
+
+```{r}
+## Test ##
+test_that('the subset only has penguins from Torgersen and Dream islands', {
+  expect_output(print(unique(penguins_subset$island)), "[1] Torgersen Dream", fixed = TRUE)
+  
+})
+```
+
+```{r}
+. = " # BEGIN TEST CONFIG
+points: 1
+hidden: true
+success_message: Good job. You have successfully filtered the data set to only include observations where the species is Adelie!
+
+failure_message: Oops! Let's give it another try. Ensure you have filtered the penguins data to only keep rows where the entry for **species** exactly matches **Adelie**.
+" # END TEST CONFIG
+
+  
+```
+
+```{r}
+. = " # BEGIN TEST CONFIG
+points: 1
+hidden: true
+success_message: You are doing great. The data only has female penguins!
+
+failure_message: Oops! Let's give it another try. Perhaps we included some male penguins?
+" # END TEST CONFIG
+```
+
+```{r}
+. = " # BEGIN TEST CONFIG
+points: 1
+hidden: true
+success_message: That's right. We now have penguins from Torgersen and Dream islands.
+
+failure_message: Almost there. Let's give it another try. Perhaps we included some Biscoe penguins?
+" # END TEST CONFIG
+```
+
+## Wrap up and Resources
+
+Fantastic! You just did some data wrangling in R. You learnt how to:
+
+-   Load packages in R using `library()`
+
+-   Drop missing values using `drop_na()`
+
+-   Query whether there are missing values `anyNA()`
+
+-   Subset unique rows using `distinct()`
+
+-   Keep rows that satisfy your conditions using `filter()`
+
+The fun doesn't end here, `dplyr` has a whole bunch of useful verbs:
+
+-   `select()`: keep or exclude some columns
+
+-   `rename()`: rename columns
+
+-   `relocate()`: move columns around
+
+-   `mutate()`: add a new column
+
+-   `group_by()` + `summarize()`: get summary statistics by group
+
+Here are some great places you can learn all about them:
+
+-   [dplyr.tidyverse.org](https://dplyr.tidyverse.org/)
+
+-   [R for Data Science](https://r4ds.had.co.nz/) by Hadley Wickham and Garrett Grolemund
+
+Happy learning!
