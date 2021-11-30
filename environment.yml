@@ -5,3 +5,4 @@ dependencies:
   - r-tidyverse
   - r-testthat
   - r-palmerpenguins
+  - r-devtools
