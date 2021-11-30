@@ -1,1 +1,5 @@
-
+install.packages("tidyverse")
+install.packages("palmerpenguins")
+install.packages("devtools")
+library(devtools)
+install_github("ucbds-infra/ottr@stable")
