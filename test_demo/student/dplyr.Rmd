@@ -113,13 +113,6 @@ Good job!! Give it a try too.
 
 **Question 1: filter** the **penguins** data to only keep rows where the entry for **species** exactly matches "Chinstrap". Save this in a variable name `chinstrap_penguins`
 
-```
-BEGIN QUESTION
-name: Question 1
-manual: false
-    
-```
-
 ```{r}
 chinstrap_penguins <- penguins %>% 
   filter(species == "Chinstrap")
@@ -128,28 +121,8 @@ chinstrap_penguins %>%
   head()
 ```
 
-
-
-
 ```{r}
-. = " # BEGIN TEST CONFIG
-
-success_message: Excellent. You have successfully filtered the data set to only include observations where the species is Chinstrap!
-
-failure_message: Oops! Let's give it another try. Ensure you have filtered the penguins data to only keep rows where the entry for **species** exactly matches **Chinstrap**.
-" # END TEST CONFIG
-
-suppressPackageStartupMessages({
-  library(testthat)
-})
-
-
-## Test ##
-test_that('the subset only has Chinstrap penguins', {
-  expect_output(print(unique(chinstrap_penguins$species)), "[1] Chinstrap", fixed = TRUE)
-  
-})
-  
+. = ottr::check("tests/Question 1.R")
 ```
 
 ### **Example 2**
@@ -184,16 +157,6 @@ Give it a try yourself.
 
 **Question 2:** Create a subset from `penguins` containing observations for **female** **Adelie** penguins on **Dream** or **Torgersen** Islands.
 
-```
-    BEGIN QUESTION
-
-    name: Question 2
-
-    manual: false
-
-        
-```
-
 ```{r}
 penguins_subset <- penguins %>%
   filter(sex == "female",
@@ -204,51 +167,8 @@ penguins_subset %>%
   head()
 ```
 
-
-
-
 ```{r}
-. = " # BEGIN TEST CONFIG
-
-success_message: Good job. You have successfully filtered the data set to only include observations where the species is Adelie!
-
-failure_message: Oops! Let's give it another try. Ensure you have filtered the penguins data to only keep rows where the entry for **species** exactly matches **Adelie**.
-" # END TEST CONFIG
-
-test_that('the subset only has Adelie penguins', {
-  expect_output(print(unique(penguins_subset$species)), "[1] Adelie", fixed = TRUE)
-  
-})
-  
-```
-
-```{r}
-. = " # BEGIN TEST CONFIG
-success_message: You are doing great. The data only has female penguins!
-
-failure_message: Oops! Let's give it another try. Perhaps we included some male penguins?
-" # END TEST CONFIG
-
-
-test_that('the subset only has female penguins', {
-  expect_output(print(unique(penguins_subset$sex)), "[1] female", fixed = TRUE)
-  
-})
-```
-
-```{r}
-. = " # BEGIN TEST CONFIG
-
-success_message: That's right. You have successfully kept penguins from Torgersen and Dream islands.
-
-failure_message: Almost there. Let's give it another try. Perhaps we included some Biscoe penguins?
-" # END TEST CONFIG
-
-test_that('the subset only has penguins from Torgersen and Dream islands', {
-  expect_output(print(unique(penguins_subset$island)), "[1] Torgersen Dream", fixed = TRUE)
-  
-})
-
+. = ottr::check("tests/Question 2.R")
 ```
 
 ## Wrap up and Resources
